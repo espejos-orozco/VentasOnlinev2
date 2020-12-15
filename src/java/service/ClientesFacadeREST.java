@@ -82,10 +82,29 @@ public class ClientesFacadeREST extends AbstractFacade<Clientes> {
     public String countREST() {
         return String.valueOf(super.count());
     }
-
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
     
+    @GET
+    @Path("findsession/{password}/{email}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String findsession(@PathParam("password") String password, @PathParam("email") String correoElectronico) {
+        int cliente_id = -1;
+        List<Clientes> clientes = super.findAll();
+        
+        for (int i = 0; i < clientes.size(); i++) {
+            if(clientes.get(i).getCorreoElectronico().equals(correoElectronico)){
+                if(clientes.get(i).getPassword().equals(password)){
+                    if(clientes.get(i).getActivo().equals("1")){
+                        cliente_id = clientes.get(i).getClienteId();
+                        i = clientes.size();
+                    }
+                }
+            }
+        }
+        return String.valueOf(cliente_id);
+    }
 }
