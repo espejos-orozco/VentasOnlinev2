@@ -90,8 +90,8 @@ public class ClientesFacadeREST extends AbstractFacade<Clientes> {
     
     @GET
     @Path("findsession/{password}/{email}")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String findsession(@PathParam("password") String password, @PathParam("email") String correoElectronico) {
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Clientes findsession(@PathParam("password") String password, @PathParam("email") String correoElectronico) {
         int cliente_id = -1;
         List<Clientes> clientes = super.findAll();
         
@@ -105,6 +105,6 @@ public class ClientesFacadeREST extends AbstractFacade<Clientes> {
                 }
             }
         }
-        return String.valueOf(cliente_id);
+        return super.find(cliente_id);
     }
 }

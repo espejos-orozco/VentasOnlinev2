@@ -25,7 +25,7 @@ import javax.ws.rs.core.MediaType;
  * @author LeoNa
  */
 @Stateless
-@Path("personal")
+@Path("entities.personal")
 public class PersonalFacadeREST extends AbstractFacade<Personal> {
 
     @PersistenceContext(unitName = "VentasOnlinePU")
@@ -88,10 +88,10 @@ public class PersonalFacadeREST extends AbstractFacade<Personal> {
         return em;
     }
     
-    @GET
+    @POST
     @Path("findsession/{password}/{usuario}")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String findsession(@PathParam("password") String password, @PathParam("usuario") String usuario) {
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Personal findsession(@PathParam("password") String password, @PathParam("usuario") String usuario) {
         int personal_id = -1;
         List<Personal> personals = super.findAll();
         
@@ -105,7 +105,26 @@ public class PersonalFacadeREST extends AbstractFacade<Personal> {
                 }
             }
         }
-        return String.valueOf(personal_id);
+        return super.find(personal_id);
     }
     
+    @POST
+    @Path("{nombre}/{apellido}/{fecha_nacimiento_date}/{acceso_sistema}/{usuario}/{password}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Personal insert(@PathParam("password") String password, @PathParam("usuario") String usuario) {
+        int personal_id = -1;
+        List<Personal> personals = super.findAll();
+        
+        for (int i = 0; i < personals.size(); i++) {
+            if(personals.get(i).getUsuario().equals(usuario)){
+                if(personals.get(i).getPassword().equals(password)){
+                    if(personals.get(i).getActivo().equals("1") && personals.get(i).getAccesoSistema().equals("1")){
+                        personal_id = personals.get(i).getPersonalId();
+                        i = personals.size();
+                    }
+                }
+            }
+        }
+        return super.find(personal_id);
+    }
 }
